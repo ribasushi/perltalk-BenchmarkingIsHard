@@ -17,6 +17,8 @@ use Module::Find 'findsubmod';
 use Module::Runtime 'require_module';
 require_module($_) for findsubmod 'BenchDemo';
 
+my $TOO_LONG = 25;
+
 my @o;
 my $tasklist = [
   [ 'time 10000' => sub {
@@ -226,6 +228,8 @@ sub runloop {
 
   Term::Screen->new->clrscr;  # why the hell doesn't this work saved in a var >.<
 
+  $SIG{ALRM} = sub { die "Run is taking toooooo long, possibly a runaway approximation? Try again :(\n" };
+
   while (1) {
 
     printf "Tasklist\n========\n";
@@ -294,7 +298,12 @@ sub runloop {
       ($deparse ||= B::Deparse->new)->coderef2text($tasklist->[$task][1]),
       '^' x 76,
     ;
-    $tasklist->[$task][1]->();
+    eval {
+      alarm ($TOO_LONG);
+      $tasklist->[$task][1]->();
+      alarm(0);
+      1;
+    } or warn $@;
     printf "\n\n\n\n";
   }
 }
