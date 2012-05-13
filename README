@@ -1,3 +1,7 @@
 Simply clone the repo, get the deps (e.g. via `cpanm --installdeps .`) and start ./benchdemo.pl
 
+Some related reading:
+https://metacpan.org/module/Dumbbench#HOW-IT-WORKS-AND-WHY-IT-DOESNT
+http://blogs.perl.org/users/steffen_mueller/2010/09/your-benchmarks-suck.html
+
 Cheers
