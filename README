@@ -1,0 +1,3 @@
+Simply clone the repo, get the deps (e.g. via `cpanm --installdeps .`) and start ./benchdemo.pl
+
+Cheers
