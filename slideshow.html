@@ -61,15 +61,15 @@
    <div id="currentSlide"><!-- DO NOT EDIT --></div>
    <div id="header"></div>
    <div id="footer">
-      <h1>Benchmarking is hard!</h1>
-      <h2>YAPC::RU 2012</h2>
+      <h1>Benchmarking is *REALLY* hard!</h1>
+      <h2>YAPC::EU 2013</h2>
    </div>
 </div>
 
 <div class="presentation" style="font-size:75%">
 
    <div class="slide" >
-      <h1>Benchmarking is hard!<p></h1><h2>or why you shouldn't use App::Benchmark::Accessors</h2>
+      <h1>Benchmarking is *REALLY* hard!<p><h2>Adventures in failure</h2></h1>
     </div>
 
    <div class="slide">
@@ -84,35 +84,323 @@
   </div>
 
    <div class="slide">
-      <h1>Peter Rabbitson (ribasushi)</h1>
+      <h1>Why benchmark</h1>
       <ul>
-        <li>DBIC Toolchain Chainsaw delegate since summer 2008</li>
-        <li>General complaints department</li>
-        <li>I suck at slides</li>
-        <li><a href="http://chat.mibbit.com/#dbix-class@irc.perl.org">ribasushi on irc.perl.org#dbix-class</a></li>
-        <li><a href="mailto:ribasushi@cpan.org">ribasushi@cpan.org</a></li>
-        <li>Rhymes with <i>"Is he a she?"</i></li>
+        <li>Confirm viability of chosen design direction</li>
+        <li>Quantify incremental improvements</li>
+        <li><a href="http://search.cpan.org/~ribasushi/Class-Accessor-Grouped-0.10010/lib/Class/Accessor/Grouped.pm#Benchmark">Shiny comparisons</a></li>
       </ul>
   </div>
 
    <div class="slide">
-      <h1>Presentation</h1>
-      <pre>
-
-
-        ./benchdemo.pl
-
-
-      </pre>
-   </div>
-
+      <h1>Why not profile</h1>
+      <ul>
+        <li>Requires a complete working system</li>
+        <li>Not informative until said system is established</li>
+        <li>Focuses on comparing apples and oranges</li>
+      </ul>
+  </div>
 
    <div class="slide">
-      <h1>References</h1>
+      <h1>Why microbenchmark</h1>
       <ul>
-        <li><a href="http://blogs.perl.org/users/steffen_mueller/2010/09/your-benchmarks-suck.html">YOUR BENCHMARKS SUCK! (by Steffen Mueller)</a>
+        <li>"It doesn't matter" (pjcj lighing talk YAPC:EU 2011)</li>
+      </ul>
+  </div>
+
+   <div class="slide">
+      <h1>Why microbenchmark</h1>
+      <ul>
+        <li>"It doesn't matter" (pjcj lighing talk YAPC:EU 2011)
+        <br>... until it does</li>
+        <li> (Micro Improvements) * (Too Many Calls) = WINNING!
+      </ul>
+  </div>
+
+   <div class="slide">
+      <h1>Challenge #1 - reproducibility</h1>
+      <ul>
+        <li>Modern CPUs are too smart</li>
+        <li>Modern hardware is too cheap</li>
+        <li>Modern OSes are too busy</li>
+        <li>Modern software is too clever</li>
+      </ul>
+  </div>
+
+   <div class="slide">
+      <h1>Smart CPUs</h1>
+      <ul>
+        <li>Intel turbo-boost / Amd turbo-core</li>
+        <li>Aggressive thermal management</li>
+        <li>Aggressive power saving</li>
+        <li>Even more aggressive cache sharing</li>
+        <li>Most system (of any class) in 2013 have a combination of the above</li>
+      </ul>
+  </div>
+
+   <div class="slide">
+      <h1>Cheap hardware</h1>
+      <ul>
+        <li>High Frequency Clock instability</li>
+      </ul>
+  </div>
+
+   <div class="slide">
+      <h1>Busy OSes</h1>
+      <ul>
+        <li>Many background processes</li>
+        <li>Virtual memory management</li>
+        <li>FS cache management</li>
+        <li>GUI events</li>
+      </ul>
+  </div>
+
+   <div class="slide">
+      <h1>Busy OSes</h1>
+      <ul>
+        <li>Many background processes</li>
+        <li>Virtual memory management</li>
+        <li>FS cache management</li>
+        <li>GUI events</li>
+        <li>PRISM user client v11.09.2001</li>
+        <li>JavaScript bitcoin miner vPWN69</li>
+        <li>Freenet flash client v31337</li>
+        <li>Bundestrojaner v1984</li>
+      </ul>
+  </div>
+
+   <div class="slide">
+      <h1>Location of code in memory</h1>
+      <ul>
+        <li>xdg's <a href="http://www.dagolden.com/index.php/1849/adventures-in-benchmarking-part-1/">"Adventures in benchmarking"</a></li>
+      </ul>
+  </div>
+
+   <div class="slide">
+      <h1>Location of code in memory</h1>
+      <ul>
+        <li>xdg's <a href="http://www.dagolden.com/index.php/1849/adventures-in-benchmarking-part-1/">"Adventures in benchmarking"</a></li>
+        <li>It sucks to be called "L..."</a></li>
+      </ul>
+  </div>
+
+   <div class="slide">
+      <h1>Is it hopeless?</h1>
+      <ul>
+        <li>Mostly yes</li>
+      </ul>
+  </div>
+
+   <div class="slide">
+      <h1>Mitigation - system-wide</h1>
+      <ul>
+        <li>Ventilation!!!</li>
+        <li>Reduce amount of background processes</li>
+        <li>Lock CPU in lowest power state</li>
+      </ul>
+  </div>
+
+   <div class="slide">
+      <h1>Mitigation - system-wide</h1>
+      <ul>
+        <li>Lock CPU in lowest power state: Linux sysfs</li>
+        <pre>
+
+cd /sys/devices/system/cpu/
+
+
+
+cpu*/cpufreq/cpuinfo_min_freq
+cpu*/cpufreq/cpuinfo_max_freq
+
+cpu*/cpufreq/scaling_governor
+             ^^^ of little consequence
+
+
+
+cd /sys/devices/system/cpu/
+for f in cpu*/cpufreq/scaling_max_freq; do
+  cat cpu0/cpufreq/cpuinfo_min_freq > $f
+done
+
+</pre>
+      </ul>
+  </div>
+
+  <div class="slide">
+    <h1>Mitigation - proper tools</h1>
+    <ul>
+      <li>Use <a href="https://metacpan.org/module/Dumbbench">Dumbbench</a> by Steffen Mueller
+      <li><a href="http://blogs.perl.org/users/steffen_mueller/2010/09/your-benchmarks-suck.html">"Your Benchmarks Suck"</a>
+    </ul>
+  </div>
+
+  <div class="slide">
+    <h1>Mitigation - proper tools</h1>
+    <ul>
+      <li>Use <a href="https://metacpan.org/module/Dumbbench">Benchmark::Dumb</a>
+      <li>Before:
+<pre>
+
+
+
+use Benchmark qw(cmpthese :hireswallclock);
+
+cmpthese (-1, {
+  not_l => sub { ... }
+  not_l_either => sub { ... }
+});
+</pre>
+    </ul>
+  </div>
+
+  <div class="slide">
+    <h1>Mitigation - proper tools</h1>
+    <ul>
+      <li>Use <a href="https://metacpan.org/module/Dumbbench">Benchmark::Dumb</a>
+      <li>After:
+<pre>
+
+
+
+use Benchmark::Dumb qw(cmpthese);
+
+cmpthese (0.003, {
+  not_l => sub { ... }
+  not_l_either => sub { ... }
+});
+</pre>
+    </ul>
+  </div>
+
+  <div class="slide">
+    <h1>Mitigation - use CPU time</h1>
+    <ul>
+      <li>Wall-time vs CPU-time</li>
+
+      <li>Before:
+<pre>
+
+
+
+use Benchmark::Dumb qw(cmpthese);
+
+cmpthese (0.003, {
+  not_l => sub { ... }
+  not_l_either => sub { ... }
+});
+</pre>
+    </ul>
+
+  </div>
+
+  <div class="slide">
+    <h1>Mitigation - use CPU time</h1>
+    <ul>
+      <li>Wall-time vs CPU-time</li>
+
+      <li>After:
+<pre>
+
+
+
+use Benchmark::Dumb qw(cmpthese);
+
+local *Time::HiRes::time = eval &lt;&lt;ETM;
+  sub { Time::HiRes::clock_gettime(
+    @{[ Time::HiRes::CLOCK_PROCESS_CPUTIME_ID ]}
+  ) }
+ETM
+
+cmpthese (0.003, {
+  not_l => sub { ... }
+  not_l_either => sub { ... }
+});
+</pre>
+    </ul>
+
+  </div>
+
+  <div class="slide">
+    <h1>Mitigation - adjust what we benchmark</h1>
+    <ul>
+      <li>Function call ( sub{}-&gt;() ) overhead</li>
+      <li>Crappy clocks - more than 1000 iterations/sec == bad</li>
+      <li>Turn a micro-benchmark into a macro-benchmark</li>
+
+      <li>Before:
+<pre>
+
+
+
+use Benchmark::Dumb qw(cmpthese);
+
+cmpthese (0.003, {
+  not_l => sub { ... }
+  not_l_either => sub { ... }
+});
+</pre>
+    </ul>
+
+  </div>
+
+  <div class="slide">
+    <h1>Mitigation - adjust what we benchmark</h1>
+    <ul>
+      <li>Function call ( sub{}-&gt;() ) overhead</li>
+      <li>Crappy clocks - more than 1000 iterations/sec == bad</li>
+      <li>Turn a micro-benchmark into a macro-benchmark</li>
+
+      <li>After:
+<pre>
+
+
+
+use Benchmark::Dumb qw(cmpthese);
+
+my $mult = 10_000;
+
+cmpthese (0.003, {
+  not_l => sub { ... for (1..$mult) }
+  not_l_either => sub { ... for (1..$mult) }
+});
+</pre>
+    </ul>
+
+  </div>
+
+
+  <div class="slide">
+    <h1>Mitigation - adjust where we benchmark</h1>
+    <ul>
+      <li>Remember the plight of "L"</li>
+      <li>use <a href="https://metacpan.org/module/Benchmark::Forking">Benchmark::Forking</a></li>
+    </ul>
+  </div>
+
+  <div class="slide">
+    <h1>Mitigation - adjust where we benchmark</h1>
+    <ul>
+      <li>Remember the plight of "L"</li>
+      <li>use <a href="https://metacpan.org/module/Benchmark::Forking">Benchmark::Forking</a></li>
+      <li>xdg: <a href="http://www.dagolden.com/index.php/1849/adventures-in-benchmarking-part-1">"Benchmark::Forking FTW!"</a>
+      <br>...riiiiight</li>
+    </ul>
+  </div>
+
+  <div class="slide">
+    <h1>Future pie-in-the-sky - Benchmark::Sane</h1>
+    <ul>
+      <li>Benchmark units specified via a YAML-based templating language
+      <li>All timed units are string-evaled
+      <li>Each iteration runs in a separate perl executable
+    </ul>
+  </div>
+
+  <div class="slide">
+      <h1>Presentation and other toys</h1>
+      <ul>
         <li><a href="https://github.com/ribasushi/perltalk-BenchmarkingIsHard">https://github.com/ribasushi/perltalk-BenchmarkingIsHard</a>
-        <li><a href="https://metacpan.org/release/Dumbbench">Dumbbench.pm</a>
       </ul>
    </div>
 
